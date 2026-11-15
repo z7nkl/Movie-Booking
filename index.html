@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  
+<head>
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" /> 
+  
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+  
+  <title> Cinema reservation page </title>
+  
+  <style>
+    
+    
+    /* CSS */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #F2E9E4; 
+      color: #FAF0E6; 
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #3f3244; 
+      color: #14746f; 
+      padding: 2rem;
+      position: relative;
+      font-size: 40px;
+      justify-content: space-around; 
+      align-items: center;
+      position: static;
+      top: 0;
+      z-index: 1000;
+      text-align: left;
+    }
+
+    
+    .search-container {
+      position: absolute;
+      top: 18px;
+      right: 15px;
+      margin-left: 10px;
+    }
+
+    input[type="text"] {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: none;
+      width: 200px;
+      transition: width 0.2s ease;
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    input[type="text"]:focus {
+      width: 250px;
+      outline: none;
+    }
+
+    h1 {
+      margin: auto;
+      font-size: 40px;
+      
+    }
+    
+    h2 {
+      font-family: Arial, sans-serif;
+      font-size: 33px;
+      font-weight: bolder;
+      color: #3f3244;
+      margin-bottom: 10px;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    main {
+      padding: 1rem;
+    }
+
+    .movies {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      
+    }
+
+    .movie {
+      background: #14746f; 
+      color: #3f3244;
+      border: 3px ; 
+      border-radius: 20px;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      border-radius: 0.5rem;
+    }
+    
+    .resize-image {
+      max-width: 300px;
+      height :400px; 
+      object-fit: cover; 
+      border-radius: 10px;
+    }
+
+    button {
+      background-color: #3f3244;
+      color: #14746f; 
+      border: none;
+      padding: 0.6rem 1rem;
+      margin-top: 0.5rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    
+
+    button:hover {
+      transform: scale(1.10); 
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+  
+    
+    footer {
+      background-color: #3f3244; 
+      color: #14746f; 
+      padding: 40px 30px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+    
+    footer div {
+      flex: 1 1 300px;
+      margin: 10px;
+    }
+    
+    footer h2 {
+      color: #f2e9e4; 
+      font-size: 1.5em;
+      margin-bottom: 10px;
+    }
+    
+    footer p {
+      color: #14746f; 
+      font-size: 1em;
+      margin: 5px 0;
+    }
+    
+    
+    footer ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+    
+    footer ul li {
+      display: inline-block;
+    }
+    
+    footer ul li a {
+      color: #14746f; 
+      font-size: 1.5em;
+      transition: color 0.3s;
+    }
+    
+    footer ul li a:hover {
+      color: #14746f; 
+    }
+    
+    
+    footer div p {
+      font-size: 0.9em;
+      color: #c9ada7; 
+    }
+    
+    
+    footer a {
+      display: inline-block;
+      color: #14746f;
+      font-size: 2em;
+      margin-top: 20px;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    footer a:hover {
+      color: #9a8c98; 
+    }
+    
+    p:hover,h2:hover{
+      color: #14746f;
+      
+    }
+    @media (max-width: 768px) {
+      footer {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      footer div {
+        flex: 1 1 100%;
+      }
+      
+      .back-to-top {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        color: #f2e9e4;
+        font-size: 2em;
+        text-decoration: none;
+        transition: color 0.3s;
+        padding: 10px;
+        border-radius: 50%;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+      }
+      
+      .back-to-top:hover {
+        color: #9a8c98;
+        background-color: #4a4e69;
+      }
+
+  </style>
+  
+  
+</head>
+<body>
+  <header>
+    <h1> - Cinema Reservation - </h1>
+  
+    <div class="search-container">
+      <input type="text" placeholder="Search a movie..."  id="searchInput"  onkeyup="searchMovies()">
+    </div>
+  </header>
+  
+  <main>
+    <section class="now-showing">
+      <h2> Showing now </h2> <br> <br>
+      <div class="movies" id="moviesList">
+      
+       
+<div class="movie">
+    <img src="MOVIE1.jpeg" alt=" 1 " class="resize-image">
+    <p> THE DARK KNIGHT </p>
+    <button onclick="window.location.href='movie_details.html?movieId=1'">Book now</button>
+</div>
+
+<div class="movie">
+    <img src="MOVIE2.jpeg" alt=" 2 " class="resize-image">
+    <p> JOKER </p>
+    <button onclick="window.location.href='movie_details.html?movieId=2'">Book now</button>
+</div>
+
+<div class="movie">
+    <img src="MOVIE3.jpeg" alt=" 3 " class="resize-image">
+    <p> OPPENHEIMER </p>
+    <button onclick="window.location.href='movie_details.html?movieId=3'">Book now</button>
+</div>
+
+<div class="movie">
+    <img src="MOVIE4.jpeg" alt=" 4 "  class="resize-image">
+    <p> DUMP AND DUMBER  </p>
+    <button onclick="window.location.href='movie_details.html?movieId=4'">Book now</button>
+</div>
+
+<div class="movie">
+    <img src="MOVIE5.jpeg" alt=" 5 " class="resize-image">
+    <p> PIRATES OF THE CARIBBEAN </p>
+    <button onclick="window.location.href='movie_details.html?movieId=5'">Book now</button>
+</div>
+
+<div class="movie">
+    <img src="MOVIE6.jpeg" alt=" 6 " class="resize-image">
+    <p> FIGHT CLUB </p>
+    <button onclick="window.location.href='movie_details.html?movieId=6'">Book now</button>
+</div>
+
+<div class="movie">
+    <img src="MOVIE7.jpeg" alt=" 7 " class="resize-image">
+    <p> INTERSTELLAR </p>
+    <button onclick="window.location.href='movie_details.html?movieId=7'">Book now</button>
+</div>
+
+<div class="movie">
+    <img src="MOVIE8.jpeg" alt=" 8 " class="resize-image">
+    <p> INCEPTION </p>
+    <button onclick="window.location.href='movie_details.html?movieId=8'">Book now</button>
+</div>
+
+
+        <br>
+      </div>
+    </section>
+    
+    
+    <section class="coming-soon">
+      <h2> coming soon </h2> <br> <br>
+      <div class="movies">
+        <div class="movie">
+          <img src="MOVIE9.jpeg" alt=" 0 " class="resize-image" >
+          <p> SARFIRA-COMING SOON </p>
+        </div>
+        
+        <div class="movie">
+          <img src="MOVIE10.jpeg" alt=" 00" class="resize-image" >
+          <p> SKYSRAPER-COMING SOON </p>
+        </div>
+        
+      </div> <br> <br> <br>
+    </section>
+    </main>
+    
+    
+    <footer>
+    
+      <div>
+        <h2>Contact Us</h2>
+        <p>Email:  Cinema reservation@gmail.com</p>
+      </div>
+      
+ <div>
+        <h2>Follow us</h2>
+        
+        <ul>
+          <li><a href="https://x.com/" target="_Blank"> 
+            <i class="fa-brands fa-x-twitter"></i>
+          </a>
+          </li>
+          
+      <li><a href="https://www.facebook.com/" target="_Blank">
+      <i class="fa-brands fa-facebook-f"></i>
+      </a>
+      </li>
+          
+          <li><a href="https://www.instagram.com/" target="_Blank"> 
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+          </li>
+          
+        </ul>
+  </div> 
+      
+      
+      <div>
+        <p>&copy; 2024 Cinema reservation. All rights reserved.</p>
+      </div>
+      <a href="#">
+        <i class="fa-solid fa-circle-chevron-up"></i> <!--Back to top-->
+      </a>
+      
+    </footer>
+    
+  
+  
+  
+  
+  <script>
+    // JavaScript
+    function bookMovie(movieName) {
+      alert( Movie ${movieName} has been booked successfully!); 
+    }
+
+  
+    function searchMovies() {
+      const input = document.getElementById('searchInput');
+      const filter = input.value.toLowerCase();
+      const movies = document.getElementsByClassName('movie');
+      
+      for (let i = 0; i < movies.length; i++) {
+        const movieTitle = movies[i].getElementsByTagName('h3')[0];
+        if (movieTitle) {
+          const textValue = movieTitle.textContent || movieTitle.innerText;
+          if (textValue.toLowerCase().indexOf(filter) > -1) {
+            movies[i].style.display = "";
+          } else {
+            movies[i].style.display = "none";
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>

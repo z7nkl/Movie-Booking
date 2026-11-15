@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F2E9E4;
+            color: #3f3244;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        header {
+            background-color: #3f3244;
+            color: #14746f;
+            padding: 2rem;
+            font-size: 40px;
+        }
+
+        .container {
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #14746f;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #14746f;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        .details {
+            margin: 10px 0;
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        .payment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        input[type="text"],
+        select {
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:hover,
+        select:hover {
+            border-color: #14746f;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            border-color: #14746f;
+            outline: none;
+            box-shadow: 0 0 5px rgba(20, 116, 111, 0.4);
+        }
+
+        /* Expiry date: month + year drop-downs side by side */
+        .expiry-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .expiry-row select {
+            flex: 1;
+            background-color: #fff;
+            color: #3f3244;
+            cursor: pointer;
+        }
+
+        select:invalid {
+            color: #757575;
+        }
+
+        .invalid {
+            border-color: #ff4d4d !important;
+        }
+
+        .error-box {
+            display: none;
+            background-color: #ffe9e9;
+            color: #b00020;
+            border: 1px solid #ff4d4d;
+            border-radius: 5px;
+            padding: 10px 15px;
+            text-align: left;
+        }
+
+        .error-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #14746f;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+
+        }
+
+        button:hover {
+            background-color: #105a50;
+        }
+
+        button.cancel {
+            background-color: #ff4d4d;
+        }
+
+        button.cancel:hover {
+            background-color: #e03a3a;
+        }
+
+        /* Payment success message */
+        #successView {
+            display: none;
+        }
+
+        .success-icon {
+            width: 70px;
+            height: 70px;
+            line-height: 70px;
+            margin: 0 auto 15px auto;
+            border-radius: 50%;
+            background-color: #14746f;
+            color: #fff;
+            font-size: 42px;
+        }
+
+        .success-text {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .receipt {
+            margin-top: 15px;
+        }
+
+        #successView button {
+            margin-top: 25px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Payment</h1>
+    </header>
+
+    <div class="container">
+
+        <!-- Payment form -->
+        <div id="paymentView">
+            <h3 class="section-title">Booking Details</h3>
+            <p id="movieDetails" class="details"></p>
+            <p id="showtimeDetails" class="details"></p>
+            <p id="seatDetails" class="details"></p>
+            <p id="priceDetails" class="details"></p>
+
+            <h3 class="section-title">Payment Information</h3>
+            <form class="payment-form" onsubmit="processPayment(event)" novalidate>
+                <input type="text" id="name" placeholder="Name on Card" required>
+                <input type="text" id="cardNumber" placeholder="Card Number" required inputmode="numeric">
+                <div class="expiry-row">
+                    <select id="expiryMonth" required>
+                        <option value="" disabled selected>Expiry Month</option>
+                        <option value="01">01</option>
+                        <option value="02">02</option>
+                        <option value="03">03</option>
+                        <option value="04">04</option>
+                        <option value="05">05</option>
+                        <option value="06">06</option>
+                        <option value="07">07</option>
+                        <option value="08">08</option>
+                        <option value="09">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                    </select>
+                    <select id="expiryYear" required>
+                        <option value="" disabled selected>Expiry Year</option>
+                    </select>
+                </div>
+                <input type="text" id="cvv" placeholder="CVV" required inputmode="numeric">
+                <div id="errorBox" class="error-box"></div>
+                <div class="button-container">
+                    <button type="submit">Pay</button>
+                    <button class="cancel" onclick="cancelPayment(event)">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Shown after a successful payment -->
+        <div id="successView">
+            <div class="success-icon">&#10003;</div>
+            <h3 class="section-title">Payment Successful!</h3>
+            <p class="success-text">Your payment has been verified and your booking is confirmed.</p>
+
+            <div class="receipt">
+                <p id="sMovie" class="details"></p>
+                <p id="sShowtime" class="details"></p>
+                <p id="sSeats" class="details"></p>
+                <p id="sTotal" class="details"></p>
+                <p id="sName" class="details"></p>
+                <p id="sCard" class="details"></p>
+            </div>
+
+            <button type="button" onclick="window.location.href = 'index.html'">Back to Home</button>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const movieId = params.get('movieId');
+        const showtime = params.get('showtime');
+        const seats = params.get('seats');
+        const totalPrice = params.get('totalPrice');
+
+        const movies = [
+            { id: 1, title: "The Dark Knight (2008)" },
+            { id: 2, title: "Joker (2019)" },
+            { id: 3, title: "Oppenheimer (2023)" },
+            { id: 4, title: "Dumb and Dumber (1994)" },
+            { id: 5, title: "Pirates of the Caribbean: On Stranger Tides (2011)" },
+            { id: 6, title: "Fight Club (1999)" },
+            { id: 7, title: "Interstellar (2014)" },
+            { id: 8, title: "Inception (2010)" }
+        ];
+
+        let movie = null;
+        for (let i = 0; i < movies.length; i++) {
+            if (movies[i].id === parseInt(movieId)) {
+                movie = movies[i];
+                break;
+            }
+        }
+        if (!movie) {
+            alert("Movie not found. Please return to the movie booking page.");
+            window.location.href = "index.html";
+        }
+
+        document.getElementById("movieDetails").textContent = `Movie: ${movie.title}`;
+        document.getElementById("showtimeDetails").textContent = `Showtime: ${showtime}`;
+        document.getElementById("seatDetails").textContent = `Seats: ${seats}`;
+        document.getElementById("priceDetails").textContent = `Total Price: $${totalPrice}`;
+
+        // Expiry year list: this year + the next 10 years
+        const yearSelect = document.getElementById("expiryYear");
+        const currentYear = new Date().getFullYear();
+        for (let y = currentYear; y <= currentYear + 10; y++) {
+            const option = document.createElement("option");
+            option.value = String(y);
+            option.textContent = y;
+            yearSelect.appendChild(option);
+        }
+
+        // Checks every field. Returns the list of problems (empty list = payment is valid).
+        function validatePayment() {
+            const errors = [];
+            const badFields = [];
+
+            const name = document.getElementById("name").value.trim();
+            const card = document.getElementById("cardNumber").value.replace(/\s+/g, "");
+            const month = document.getElementById("expiryMonth").value;
+            const year = document.getElementById("expiryYear").value;
+            const cvv = document.getElementById("cvv").value.trim();
+
+            if (!/^[\p{L}\s.'-]{2,}$/u.test(name)) {
+                errors.push("Enter the name on the card (letters only).");
+                badFields.push("name");
+            }
+
+            if (!/^[0-9]{16}$/.test(card)) {
+                errors.push("Card number must be exactly 16 digits.");
+                badFields.push("cardNumber");
+            }
+
+            if (!month || !year) {
+                errors.push("Select the card expiry month and year.");
+                if (!month) badFields.push("expiryMonth");
+                if (!year) badFields.push("expiryYear");
+            } else {
+                const now = new Date();
+                const expired = parseInt(year) < now.getFullYear() ||
+                    (parseInt(year) === now.getFullYear() && parseInt(month) < now.getMonth() + 1);
+                if (expired) {
+                    errors.push("This card has expired.");
+                    badFields.push("expiryMonth", "expiryYear");
+                }
+            }
+
+            if (!/^[0-9]{3}$/.test(cvv)) {
+                errors.push("CVV must be exactly 3 digits.");
+                badFields.push("cvv");
+            }
+
+            return { errors, badFields, name, card };
+        }
+
+        function processPayment(event) {
+            event.preventDefault();
+
+            const errorBox = document.getElementById("errorBox");
+            ["name", "cardNumber", "expiryMonth", "expiryYear", "cvv"].forEach(id => {
+                document.getElementById(id).classList.remove("invalid");
+            });
+
+            const result = validatePayment();
+
+            if (result.errors.length > 0) {
+                errorBox.innerHTML = "";
+                const list = document.createElement("ul");
+                result.errors.forEach(message => {
+                    const item = document.createElement("li");
+                    item.textContent = message;
+                    list.appendChild(item);
+                });
+                errorBox.appendChild(list);
+                errorBox.style.display = "block";
+                result.badFields.forEach(id => document.getElementById(id).classList.add("invalid"));
+                return;
+            }
+
+            errorBox.style.display = "none";
+
+            // Payment verified: show the success message with the booking information
+            document.getElementById("sMovie").textContent = `Movie: ${movie.title}`;
+            document.getElementById("sShowtime").textContent = `Showtime: ${showtime}`;
+            document.getElementById("sSeats").textContent = `Seats: ${String(seats).split(",").join(", ")}`;
+            document.getElementById("sTotal").textContent = `Total Paid: $${totalPrice}`;
+            document.getElementById("sName").textContent = `Paid by: ${result.name}`;
+            document.getElementById("sCard").textContent = `Card: **** **** **** ${result.card.slice(-4)}`;
+
+            document.getElementById("paymentView").style.display = "none";
+            document.getElementById("successView").style.display = "block";
+            window.scrollTo(0, 0);
+        }
+
+        function cancelPayment(event) {
+            event.preventDefault();
+            if (confirm("Are you sure you want to cancel the payment?")) {
+                window.location.href = "index.html";
+            }
+        }
+    </script>
+</body>
+
+</html>

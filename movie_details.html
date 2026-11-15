@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F2E9E4;
+            color: #3f3244;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        header {
+            background-color: #3f3244;
+            color: #14746f;
+            padding: 2rem;
+            font-size: 40px;
+        }
+
+        .container {
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .movie-title {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .movie-description, .movie-duration, .movie-rating {
+            margin-top: 10px;
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #14746f;
+        }
+
+        .showtime, .seat {
+            display: inline-block;
+            background-color: #14746f;
+            color: white;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .showtime:hover, .seat:hover {
+            background-color: #3f3244;
+        }
+
+        .showtime.selected {
+            background-color: #007bff; /* Blue color for selected showtime */
+        }
+
+        .seat.selected {
+            background-color: #007bff; /* Blue color for selected seat */
+        }
+
+        .seat.premium:not(.selected):not(.reserved) {
+            background-color: gold; /* Golden color for premium seats */
+        }
+
+        .seat.reserved {
+            background-color: red; /* Reserved seat in red */
+            pointer-events: none; /* Prevent clicking on reserved seats */
+        }
+
+        #totalPrice {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            color: #14746f;
+        }
+
+        button {
+            background-color: #ff8c00; /* Orange color for confirm button */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #e07b00; /* Slightly darker orange on hover */
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Movie Booking</h1>
+    </header>
+
+    <div class="container">
+        <!-- Movie Details Section -->
+        <div id="movieDetails">
+            <h2 id="movieTitle" class="movie-title"></h2>
+            <p id="movieDescription" class="movie-description"></p>
+            <p id="movieDuration" class="movie-duration"></p>
+            <p id="movieRating" class="movie-rating"></p>
+        </div>
+
+        <!-- Showtime Selection -->
+        <div>
+            <h3 class="section-title">Choose Your Show Time</h3>
+            <div id="showtimes"></div>
+        </div>
+
+        <!-- Seat Selection -->
+        <div>
+            <h3 class="section-title">Pick Your Seats (Golden seats for Premium)</h3>
+            <div id="seatMap"></div>
+        </div>
+
+        <!-- Total Price -->
+        <p id="totalPrice">Total Price: $0</p>
+        
+
+        <!-- Booking Button -->
+        <button onclick="bookSeats()">Confirm Your Booking</button>
+    </div>
+
+    <script>
+
+        
+        const movies = [
+            {
+                  id: 1,
+                title: "The Dark Knight (2008)",
+                description: "When a menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman, James Gordon and Harvey Dent must work together to put an end to the madness.",
+                duration: "2h 32m",
+                rating: "+13",
+                showtimes: ["10:00 AM", "1:00 PM", "4:00 PM", "7:00 PM", "10:00 PM"],
+                seats: 100
+            },
+            {
+                id: 2,
+                title: "Joker (2019)",
+                description: "Arthur Fleck, a party clown and a failed stand-up comedian, leads an impoverished life with his ailing mother. However, when society shuns him and brands him as a freak, he decides to embrace the life of chaos in Gotham City.",
+                duration: "2h 2m",
+                rating: "+18",
+                showtimes: ["11:00 AM", "2:00 PM", "5:00 PM", "8:00 PM"],
+                seats: 80
+            },
+            {
+                id: 3,
+                title: "Oppenheimer (2023)",
+                description: "A dramatization of the life story of J. Robert Oppenheimer, the physicist who had a large hand in the development of the atomic bombs that brought an end to World War II.",
+                duration: "3h",
+                rating: "+18",
+                showtimes: ["9:00 AM", "12:00 PM", "3:00 PM", "6:00 PM"],
+                seats: 120
+            },
+            {
+                id: 4,
+                title: "Dumb and Dumber (1994)",
+                description: "After a woman leaves a briefcase at the airport terminal, a dumb limo driver and his dumber friend set out on a hilarious cross-country road trip to Aspen to return it.",
+                duration: "1h 47m",
+                rating: "+13",
+                showtimes: ["12:00 PM", "3:00 PM", "6:00 PM", "9:00 PM"],
+                seats: 90
+            },
+            {
+                id: 5,
+                title: "Pirates of the Caribbean: On Stranger Tides (2011)",
+                description: "Jack Sparrow and Barbossa embark on a quest to find the elusive fountain of youth, only to discover that Blackbeard and his daughter are after it too.",
+                duration: "2h 16m",
+                rating: "+13",
+                showtimes: ["10:00 AM", "1:00 PM", "4:00 PM", "7:00 PM"],
+                seats: 100
+            },
+            {
+                id: 6,
+                title: "Fight Club (1999)",
+                description: "An insomniac office worker and a devil-may-care soap maker form an underground fight club that evolves into much more.",
+                duration: "2h 19m",
+                rating: "+18",
+                showtimes: ["11:00 AM", "2:00 PM", "5:00 PM", "8:00 PM"],
+                seats: 80
+            },
+            {
+                id: 7,
+                title: "Interstellar (2014)",
+                description: "When Earth becomes uninhabitable in the future, a farmer and ex-NASA pilot, Joseph Cooper, is tasked to pilot a spacecraft, along with a team of researchers, to find a new planet for humans.",
+                duration: "2h 49m",
+                rating: "+13",
+                showtimes: ["9:00 AM", "12:00 PM", "3:00 PM", "6:00 PM"],
+                seats: 120
+            },
+            {
+                id: 8,
+                title: "Inception (2010)",
+                description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O., but his tragic past may doom the project and his team to disaster.",
+                duration: "2h 28m",
+                rating: "+13",
+                showtimes: ["10:00 AM", "1:00 PM", "4:00 PM", "7:00 PM"],
+                seats: 100
+            }
+        ];
+
+        
+
+        const params = new URLSearchParams(window.location.search);
+        const movieId = params.get('movieId');
+
+        if (!movieId) {
+            alert("Movie ID is missing in the URL. Please make sure the movie is correctly selected.");
+            window.location.href = "index.html";
+        }
+
+        const movie = movies.find(m => m.id === parseInt(movieId));
+        if (!movie) {
+            alert("Movie not found.");
+            window.location.href = "index.html";
+        }
+
+        document.getElementById("movieTitle").textContent = movie.title;
+        document.getElementById("movieDescription").textContent = movie.description;
+        document.getElementById("movieDuration").textContent = `Duration: ${movie.duration}`;
+        document.getElementById("movieRating").textContent = `Age Rating: ${movie.rating}`;
+
+        const showtimesDiv = document.getElementById('showtimes');
+        movie.showtimes.forEach(time => {
+            const timeDiv = document.createElement('div');
+            timeDiv.classList.add('showtime');
+            timeDiv.textContent = time;
+            timeDiv.onclick = () => selectShowtime(timeDiv);
+            showtimesDiv.appendChild(timeDiv);
+        });
+
+        const seatMapDiv = document.getElementById('seatMap');
+        let seats = [];
+        for (let i = 0; i < movie.seats; i++) {
+            const seat = document.createElement('div');
+            seat.classList.add('seat');
+            if (i < 27) {
+                seat.classList.add('premium');
+            }
+            seat.textContent = i + 1;
+            seat.onclick = () => toggleSeatSelection(seat);
+            seatMapDiv.appendChild(seat);
+            seats.push(seat);
+        }
+
+        const randomReservedSeats = getRandomReservedSeats(10, seats);
+        randomReservedSeats.forEach(index => {
+            seats[index].classList.add('reserved');
+        });
+
+        const premiumSeatPrice = 15;
+        const standardSeatPrice = 10;
+
+        
+        let selectedSeats = [];
+        let selectedShowtime = null;
+
+        // Update total price
+        function updateTotalPrice() {
+            let total = 0;
+            selectedSeats.forEach(seat => {
+                if (seat.classList.contains('premium')) {
+                    total += premiumSeatPrice;
+                } else {
+                    total += standardSeatPrice;
+                }
+            });
+            document.getElementById('totalPrice').textContent = `Total Price: $${total}`;
+        }
+
+        function toggleSeatSelection(seat) {
+            if (seat.classList.contains('reserved')) return;
+
+            const seatIndex = selectedSeats.indexOf(seat);
+            if (seatIndex === -1) {
+                seat.classList.add('selected');
+                selectedSeats.push(seat);
+            } else {
+                seat.classList.remove('selected');
+                selectedSeats.splice(seatIndex, 1);
+            }
+            updateTotalPrice();
+        }
+
+
+        function getRandomReservedSeats(count, seats) {
+            const reservedIndexes = [];
+            while (reservedIndexes.length < count) {
+                const randomIndex = Math.floor(Math.random() * seats.length);
+                if (!reservedIndexes.includes(randomIndex)) {
+                    reservedIndexes.push(randomIndex);
+                }
+            }
+            return reservedIndexes;
+        }
+
+        
+        function selectShowtime(timeDiv) {
+            if (timeDiv.classList.contains('selected')) {
+                timeDiv.classList.remove('selected');
+                selectedShowtime = null;
+            } else {
+                const previousSelected = document.querySelector('.showtime.selected');
+                if (previousSelected) {
+                    previousSelected.classList.remove('selected');
+                }
+                timeDiv.classList.add('selected');
+                selectedShowtime = timeDiv.textContent;
+            }
+        }
+
+        
+        function bookSeats() {
+            if (!selectedShowtime || selectedSeats.length === 0) {
+                alert("Please select a showtime and seats before confirming your booking.");
+            } else {
+                const seatNumbers = selectedSeats.map(seat => seat.textContent).join(',');
+                const total = document.getElementById('totalPrice').textContent.split('$')[1];
+                const bookingDetails = `movieId=${movie.id}&showtime=${encodeURIComponent(selectedShowtime)}&seats=${encodeURIComponent(seatNumbers)}&totalPrice=${total}`;
+                window.location.href = `payment.html?${bookingDetails}`;
+            }
+        }
+</script>
+
+    </script>
+
+</body>
+</html>
